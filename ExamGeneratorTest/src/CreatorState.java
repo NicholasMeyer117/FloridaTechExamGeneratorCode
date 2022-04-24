@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -14,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -36,7 +38,9 @@ public class CreatorState {
 	int exitCode;
 	JButton btnMatrix=new JButton("Add Matrix Question");
 	JButton btnExport=new JButton("Finish and Export Test");
+	JButton btnCommit=new JButton("Commit Changes");
 	int numQuestions = 0;
+	int curQuestionNum = 0;
 	JPanel mainPanel;
 	JPanel settingsPanel;
 	JPanel testPanel;
@@ -50,7 +54,7 @@ public class CreatorState {
 	SettingsPanelManager settingsPanelManager = new SettingsPanelManager(relUnitX, relUnitY);
 	TestPanelManager testPanelManager = new TestPanelManager(relUnitX, relUnitY);
 	QuestionPanelManager questionPanelManager = new QuestionPanelManager(relUnitX, relUnitY);
-	CreatorStateManager manager = new CreatorStateManager(settingsPanelManager, testPanelManager, questionPanelManager);
+	//CreatorStateManager manager = new CreatorStateManager(settingsPanelManager, testPanelManager, questionPanelManager);
 	
 	public int run(Frame frame)
 	{ 
@@ -72,6 +76,7 @@ public class CreatorState {
 			public void actionPerformed(ActionEvent e) 
 			{
 				numQuestions++;
+				curQuestionNum = numQuestions - 1;
 				Question question = new MatrixQuestion("Solve for the unknown matrix", numQuestions, "Matrix");
 				questionsList.add(question);
 				JPanel newPanel = new JPanel();
@@ -85,7 +90,94 @@ public class CreatorState {
 				testPanel.validate();
 				scrollableTestPane.validate();
 				settingsPanel.add(settingsPanelManager.addSettings("Matrix", question));
+				settingsPanel.add(btnCommit);
 				mainPanel.validate();
+			}
+	    }); 
+		
+		btnCommit.addActionListener(new ActionListener()
+		{  
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				 
+				if (questionsList.get(curQuestionNum).questionType.equals("Matrix"))
+				{
+					MatrixSettings curSettings = (MatrixSettings) settingsPanelManager.settingsList.get(curQuestionNum);
+					JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
+					MatrixQuestion question = (MatrixQuestion) questionsList.get(curQuestionNum);
+					//Component[] curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(0)).getComponents();
+					/*((JLabel) curPanel.getComponent(0)).setText("Changed Settings");
+					Component[] components;
+				    String componentName;
+				    components =  mainPanel.getComponents();            
+				    for (Component compo : components) {
+				        componentName = compo.getClass().getName();
+				        System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
+				    }
+				    System.out.println("=====================");
+				    components =  ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(0)).getComponents();            
+				    for (Component compo : components) {
+				        componentName = compo.getClass().getName();
+				        System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
+				    }
+				    System.out.println("=====================");*/
+				    JPanel matrix1Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(1);
+				    JPanel matrix2Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(3);
+				    matrix1Panel.removeAll();
+				    matrix2Panel.removeAll();
+				    view.revalidate();
+				    view.repaint();
+				    Component[] curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(0)).getComponents();
+					curSettings.m1d1 = Integer.valueOf(((JTextField) curSettingsComponents[1]).getText()) - 1;
+					curSettings.m1d2 = Integer.valueOf(((JTextField) curSettingsComponents[3]).getText()) - 1;
+					curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(1)).getComponents();
+					curSettings.m2d1 = Integer.valueOf(((JTextField) curSettingsComponents[1]).getText()) - 1;
+					curSettings.m2d2 = Integer.valueOf(((JTextField) curSettingsComponents[3]).getText()) - 1;
+				    matrix1Panel.setLayout(new GridLayout(curSettings.m1d1 + 1, curSettings.m1d2 + 1));
+				    matrix2Panel.setLayout(new GridLayout(curSettings.m2d1 + 1, curSettings.m2d2 + 1));
+				    double [][] newMatrixData = new double[curSettings.m1d1 + 1][curSettings.m1d2 + 1];
+				    System.out.println("Settings Dim: \n" + curSettings.m1d1 + " x " + curSettings.m1d2);
+				    System.out.println("GridLayout Dim: \n" + (curSettings.m1d1 + 1) + " x " + (curSettings.m1d2 + 1));
+				    System.out.println("matrix SizeX and SizeY: \n" + question.matrix1.sizeX + " x " +question.matrix1.sizeY);
+				    System.out.println("matrix Data Dim: \n" + question.matrix1.matrixData.length + " x " +question.matrix1.matrixData[0].length);
+				    System.out.println(" new matrix Data Dim: \n" + newMatrixData.length + " x " +newMatrixData[0].length);
+				    System.out.println("\n=============================\n");
+				    
+				    for (int i = 0; i <= curSettings.m1d1; i++){
+				    	for (int j = 0; j <= curSettings.m1d2; j++){
+				    		JTextField matrixNum = new JTextField(5);
+							if (i <= question.matrix1.sizeX && j <= question.matrix1.sizeY){
+								matrixNum.setText(String.valueOf(question.matrix1.matrixData[i][j]));
+								newMatrixData[i][j] = question.matrix1.matrixData[i][j]; }
+							else{
+								matrixNum.setText("0");
+								newMatrixData[i][j] = 0; }
+							matrix1Panel.add(matrixNum);}}
+				    question.matrix1.matrixData = newMatrixData;
+				    question.matrix1.sizeX = newMatrixData.length - 1;
+				    question.matrix1.sizeY = newMatrixData[0].length - 1;
+				    newMatrixData = new double[curSettings.m2d1 + 1][curSettings.m2d2 + 1];
+				    for (int i = 0; i <= curSettings.m2d1; i++){
+				    	for (int j = 0; j <= curSettings.m2d2; j++){
+				    		JTextField matrixNum = new JTextField(5);
+							if (i <= question.matrix2.sizeX && j <= question.matrix2.sizeY){
+								matrixNum.setText(String.valueOf(question.matrix2.matrixData[i][j]));
+								newMatrixData[i][j] = question.matrix2.matrixData[i][j]; }
+							else{
+								matrixNum.setText("0");
+								newMatrixData[i][j] = 0; }
+							matrix2Panel.add(matrixNum);}}
+				    question.matrix2.matrixData = newMatrixData;
+				    question.matrix2.sizeX = newMatrixData.length - 1;
+				    question.matrix2.sizeY = newMatrixData[0].length - 1;
+				    
+				    view.revalidate();
+				    view.repaint();
+				    
+				}
+				
+				
 			}
 	    }); 
 		
