@@ -34,7 +34,7 @@ public class TestPanelManager {
 		newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.Y_AXIS));
 		Border matteBorderBlack = BorderFactory.createMatteBorder(5, 3, 5, 3, Color.black);
 		Border matteBorderRed = BorderFactory.createMatteBorder(2, 2, 2, 2, Color.red);
-		if (updateCode.equals("newMatrix"))
+		if (updateCode.equals("Matrix"))
 		{
 			JPanel newQuestionPanel = new JPanel(new GridLayout());
 			newQuestionPanel.setBorder(new EmptyBorder(50, 20, 50, 20));
@@ -100,11 +100,11 @@ public class TestPanelManager {
 			
 			newPanel.setBorder(matteBorderRed);
 			
-			newPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+			/*newPanel.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     System.out.println("mouseClicked");
                 }
-            });
+            });*/
 			
 			
 			

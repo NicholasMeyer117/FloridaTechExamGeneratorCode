@@ -55,12 +55,12 @@ public class CreatorState {
 	TestPanelManager testPanelManager = new TestPanelManager(relUnitX, relUnitY);
 	QuestionPanelManager questionPanelManager = new QuestionPanelManager(relUnitX, relUnitY);
 	//CreatorStateManager manager = new CreatorStateManager(settingsPanelManager, testPanelManager, questionPanelManager);
+	List<Question> questionsList = new ArrayList<Question>();
 	
 	public int run(Frame frame)
 	{ 
 		
 		exitCode = 0;
-		List<Question> questionsList = new ArrayList<Question>();
 		createPanel(frame);
 		frame.add(mainPanel);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);  
@@ -69,29 +69,14 @@ public class CreatorState {
 		
 		HTMLParser parser = new HTMLParser();
 		
-		
 		btnMatrix.addActionListener(new ActionListener()
 		{  
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				numQuestions++;
-				curQuestionNum = numQuestions - 1;
 				Question question = new MatrixQuestion("Solve for the unknown matrix", numQuestions, "Matrix");
-				questionsList.add(question);
-				JPanel newPanel = new JPanel();
-				newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.Y_AXIS));
-				newPanel = testPanelManager.updateTestPanel(questionsList, "newMatrix", numQuestions);
-				newPanel.setPreferredSize(new Dimension(relUnitX * 9, relUnitY * 5));
-				newPanel.setMaximumSize(new Dimension(relUnitX * 9, relUnitY * 5));
-				newPanel.setMinimumSize(new Dimension(relUnitX * 9, relUnitY * 5));
-				view.add(newPanel);
-				view.add(Box.createRigidArea(new Dimension(relUnitX, relUnitY)));
-				testPanel.validate();
-				scrollableTestPane.validate();
-				settingsPanel.add(settingsPanelManager.addSettings("Matrix", question));
-				settingsPanel.add(btnCommit);
-				mainPanel.validate();
+				addQuestion(question);
+
 			}
 	    }); 
 		
@@ -106,28 +91,14 @@ public class CreatorState {
 					MatrixSettings curSettings = (MatrixSettings) settingsPanelManager.settingsList.get(curQuestionNum);
 					JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
 					MatrixQuestion question = (MatrixQuestion) questionsList.get(curQuestionNum);
-					//Component[] curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(0)).getComponents();
-					/*((JLabel) curPanel.getComponent(0)).setText("Changed Settings");
-					Component[] components;
-				    String componentName;
-				    components =  mainPanel.getComponents();            
-				    for (Component compo : components) {
-				        componentName = compo.getClass().getName();
-				        System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
-				    }
-				    System.out.println("=====================");
-				    components =  ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(0)).getComponents();            
-				    for (Component compo : components) {
-				        componentName = compo.getClass().getName();
-				        System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
-				    }
-				    System.out.println("=====================");*/
+
 				    JPanel matrix1Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(1);
 				    JPanel matrix2Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(3);
 				    matrix1Panel.removeAll();
 				    matrix2Panel.removeAll();
 				    view.revalidate();
 				    view.repaint();
+				    
 				    Component[] curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(0)).getComponents();
 					curSettings.m1d1 = Integer.valueOf(((JTextField) curSettingsComponents[1]).getText()) - 1;
 					curSettings.m1d2 = Integer.valueOf(((JTextField) curSettingsComponents[3]).getText()) - 1;
@@ -136,14 +107,8 @@ public class CreatorState {
 					curSettings.m2d2 = Integer.valueOf(((JTextField) curSettingsComponents[3]).getText()) - 1;
 				    matrix1Panel.setLayout(new GridLayout(curSettings.m1d1 + 1, curSettings.m1d2 + 1));
 				    matrix2Panel.setLayout(new GridLayout(curSettings.m2d1 + 1, curSettings.m2d2 + 1));
-				    double [][] newMatrixData = new double[curSettings.m1d1 + 1][curSettings.m1d2 + 1];
-				    System.out.println("Settings Dim: \n" + curSettings.m1d1 + " x " + curSettings.m1d2);
-				    System.out.println("GridLayout Dim: \n" + (curSettings.m1d1 + 1) + " x " + (curSettings.m1d2 + 1));
-				    System.out.println("matrix SizeX and SizeY: \n" + question.matrix1.sizeX + " x " +question.matrix1.sizeY);
-				    System.out.println("matrix Data Dim: \n" + question.matrix1.matrixData.length + " x " +question.matrix1.matrixData[0].length);
-				    System.out.println(" new matrix Data Dim: \n" + newMatrixData.length + " x " +newMatrixData[0].length);
-				    System.out.println("\n=============================\n");
 				    
+				    double [][] newMatrixData = new double[curSettings.m1d1 + 1][curSettings.m1d2 + 1];			    
 				    for (int i = 0; i <= curSettings.m1d1; i++){
 				    	for (int j = 0; j <= curSettings.m1d2; j++){
 				    		JTextField matrixNum = new JTextField(5);
@@ -154,9 +119,11 @@ public class CreatorState {
 								matrixNum.setText("0");
 								newMatrixData[i][j] = 0; }
 							matrix1Panel.add(matrixNum);}}
+				    
 				    question.matrix1.matrixData = newMatrixData;
 				    question.matrix1.sizeX = newMatrixData.length - 1;
 				    question.matrix1.sizeY = newMatrixData[0].length - 1;
+				    
 				    newMatrixData = new double[curSettings.m2d1 + 1][curSettings.m2d2 + 1];
 				    for (int i = 0; i <= curSettings.m2d1; i++){
 				    	for (int j = 0; j <= curSettings.m2d2; j++){
@@ -168,6 +135,7 @@ public class CreatorState {
 								matrixNum.setText("0");
 								newMatrixData[i][j] = 0; }
 							matrix2Panel.add(matrixNum);}}
+				    
 				    question.matrix2.matrixData = newMatrixData;
 				    question.matrix2.sizeX = newMatrixData.length - 1;
 				    question.matrix2.sizeY = newMatrixData[0].length - 1;
@@ -199,7 +167,43 @@ public class CreatorState {
 		
 	}
 	
-
+	public void addQuestion(Question question)
+	{
+		numQuestions++;
+		curQuestionNum = numQuestions - 1;
+		questionsList.add(question);
+		JPanel newPanel = new JPanel();
+		newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.Y_AXIS));
+		newPanel = testPanelManager.updateTestPanel(questionsList, question.questionType, numQuestions);
+		newPanel.setPreferredSize(new Dimension(relUnitX * 9, relUnitY * 5));
+		newPanel.setMaximumSize(new Dimension(relUnitX * 9, relUnitY * 5));
+		newPanel.setMinimumSize(new Dimension(relUnitX * 9, relUnitY * 5));
+		newPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                changeSettings(question.questionNum);
+            }
+        });
+		view.add(newPanel);
+		view.add(Box.createRigidArea(new Dimension(relUnitX, relUnitY)));
+		testPanel.validate();
+		scrollableTestPane.validate();
+		settingsPanel.removeAll();
+		settingsPanel.add(settingsPanelManager.addSettings(question.questionType, question, true));
+		settingsPanel.add(btnCommit);
+		settingsPanel.add(Box.createRigidArea(new Dimension(relUnitX, 15 * relUnitY)));
+		mainPanel.validate();
+	}
+	
+	public void changeSettings(int questionNum)
+	{
+		settingsPanel.removeAll();
+		curQuestionNum = questionNum;
+		Question question = questionsList.get(questionNum);
+		settingsPanel.add(settingsPanelManager.addSettings("Matrix", question, true));
+		settingsPanel.add(btnCommit);
+		settingsPanel.add(Box.createRigidArea(new Dimension(relUnitX, 15 * relUnitY)));
+		mainPanel.validate();
+	}
 
 	public JPanel createPanel(Frame frame)
 	{

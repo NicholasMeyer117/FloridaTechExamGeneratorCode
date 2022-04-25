@@ -27,7 +27,7 @@ public class SettingsPanelManager {
 		relUnitY = this.relUnitY;
 	}
 	
-	public JPanel addSettings(String type, Question question)
+	public JPanel addSettings(String type, Question question, boolean newQuestion)
 	{
 		JPanel newPanel = new JPanel();
 		newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.Y_AXIS));
@@ -61,12 +61,15 @@ public class SettingsPanelManager {
 			newPanel.add(matrix1Panel);
 			newPanel.add(matrix2Panel);
 			
-			newSettings.m1d1 = Integer.valueOf(dim1.getText());
-			newSettings.m1d2 = Integer.valueOf(dim2.getText());
-			newSettings.m2d1 = Integer.valueOf(dim3.getText());
-			newSettings.m2d2 = Integer.valueOf(dim4.getText());
+			if (newQuestion)
+			{
+				newSettings.m1d1 = Integer.valueOf(dim1.getText());
+				newSettings.m1d2 = Integer.valueOf(dim2.getText());
+				newSettings.m2d1 = Integer.valueOf(dim3.getText());
+				newSettings.m2d2 = Integer.valueOf(dim4.getText());
 			
-			settingsList.add(newSettings);
+				settingsList.add(newSettings);
+			}
 			
 			
 		}
