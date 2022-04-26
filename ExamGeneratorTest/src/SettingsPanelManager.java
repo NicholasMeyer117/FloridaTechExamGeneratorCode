@@ -32,6 +32,7 @@ public class SettingsPanelManager {
 		JPanel newPanel = new JPanel();
 		newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.Y_AXIS));
 		newPanel.setBorder(BorderFactory.createLineBorder(Color.green));
+		newPanel.add(new JLabel("Question: " + Integer.toString(question.questionNum + 1)));
 		if (type.equals("Matrix"))
 		{
 			MatrixSettings newSettings = new MatrixSettings(type, question);

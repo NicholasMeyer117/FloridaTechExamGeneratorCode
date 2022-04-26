@@ -35,12 +35,19 @@ import org.apache.commons.math3.linear.RealMatrix;
 
 public class CreatorState {
 	
-	int exitCode;
+	//global variables
+	int exitCode; //run method returns exit code when returning to application loop to determine what state to enter next
 	JButton btnMatrix=new JButton("Add Matrix Question");
 	JButton btnExport=new JButton("Finish and Export Test");
 	JButton btnCommit=new JButton("Commit Changes");
-	int numQuestions = 0;
-	int curQuestionNum = 0;
+	
+	int numQuestions = 0; //total number of questions in test
+	int curQuestionNum = 0; //number of question in questionList being edited at the moment
+	
+	//main panel is separated into 3 panels. From left to right they are:
+	//settingsPanel allows user to edit current question
+	//testPanel displays what the test looks like
+	//questionPanel allows user to add questions to the test
 	JPanel mainPanel;
 	JPanel settingsPanel;
 	JPanel testPanel;
@@ -48,15 +55,17 @@ public class CreatorState {
 	JScrollPane scrollableTestPane;
 	JPanel view;
 	
+	//relative units based on screen specs to preserve scaling
 	int relUnitX;
 	int relUnitY;
 	
+	//managers for the respective panels
 	SettingsPanelManager settingsPanelManager = new SettingsPanelManager(relUnitX, relUnitY);
 	TestPanelManager testPanelManager = new TestPanelManager(relUnitX, relUnitY);
 	QuestionPanelManager questionPanelManager = new QuestionPanelManager(relUnitX, relUnitY);
-	//CreatorStateManager manager = new CreatorStateManager(settingsPanelManager, testPanelManager, questionPanelManager);
 	List<Question> questionsList = new ArrayList<Question>();
 	
+	//main code block for the creator state
 	public int run(Frame frame)
 	{ 
 		
@@ -69,6 +78,7 @@ public class CreatorState {
 		
 		HTMLParser parser = new HTMLParser();
 		
+		//Btn that creates new Matrix Question and adds it to the test
 		btnMatrix.addActionListener(new ActionListener()
 		{  
 			@Override
@@ -80,12 +90,13 @@ public class CreatorState {
 			}
 	    }); 
 		
+		//Button that applies any changes made to the setting panel
 		btnCommit.addActionListener(new ActionListener()
 		{  
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				 
+				//if the current question being worked on is a Matrix question, run this code
 				if (questionsList.get(curQuestionNum).questionType.equals("Matrix"))
 				{
 					MatrixSettings curSettings = (MatrixSettings) settingsPanelManager.settingsList.get(curQuestionNum);
@@ -99,10 +110,10 @@ public class CreatorState {
 				    view.revalidate();
 				    view.repaint();
 				    
-				    Component[] curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(0)).getComponents();
+				    Component[] curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(1)).getComponents();
 					curSettings.m1d1 = Integer.valueOf(((JTextField) curSettingsComponents[1]).getText()) - 1;
 					curSettings.m1d2 = Integer.valueOf(((JTextField) curSettingsComponents[3]).getText()) - 1;
-					curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(1)).getComponents();
+					curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(2)).getComponents();
 					curSettings.m2d1 = Integer.valueOf(((JTextField) curSettingsComponents[1]).getText()) - 1;
 					curSettings.m2d2 = Integer.valueOf(((JTextField) curSettingsComponents[3]).getText()) - 1;
 				    matrix1Panel.setLayout(new GridLayout(curSettings.m1d1 + 1, curSettings.m1d2 + 1));
@@ -149,6 +160,7 @@ public class CreatorState {
 			}
 	    }); 
 		
+		//Takes the current list of questions and passes to the parser to convert to HTML
 		btnExport.addActionListener(new ActionListener()
 		{  
 			@Override
@@ -158,6 +170,7 @@ public class CreatorState {
 			}
 	    }); 
 		
+		// Main loop that just keeps running while in the creator state
 		while (true)
 		{
 			if (exitCode != 0)
@@ -167,6 +180,7 @@ public class CreatorState {
 		
 	}
 	
+	// Adds a new question to the test
 	public void addQuestion(Question question)
 	{
 		numQuestions++;
@@ -179,7 +193,8 @@ public class CreatorState {
 		newPanel.setMaximumSize(new Dimension(relUnitX * 9, relUnitY * 5));
 		newPanel.setMinimumSize(new Dimension(relUnitX * 9, relUnitY * 5));
 		newPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+			public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
                 changeSettings(question.questionNum);
             }
         });
@@ -194,6 +209,7 @@ public class CreatorState {
 		mainPanel.validate();
 	}
 	
+	//Changes the current settings panel to a new question's settings
 	public void changeSettings(int questionNum)
 	{
 		settingsPanel.removeAll();
@@ -205,6 +221,7 @@ public class CreatorState {
 		mainPanel.validate();
 	}
 
+	//Creates the main panel and its subpanels, returns mainPanel
 	public JPanel createPanel(Frame frame)
 	{
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
