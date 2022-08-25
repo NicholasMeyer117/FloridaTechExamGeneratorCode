@@ -31,6 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
 public class CreatorState {
@@ -103,10 +104,14 @@ public class CreatorState {
 					JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
 					MatrixQuestion question = (MatrixQuestion) questionsList.get(curQuestionNum);
 
+					//matrix1Panel and matrix2Panel are the two JPanels in the TestPanel that hold the matrices to be multiplied
+					//matrix 3 is the answer matrix JPanel
 				    JPanel matrix1Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(1);
 				    JPanel matrix2Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(3);
+				    JPanel matrix3Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(5);
 				    matrix1Panel.removeAll();
 				    matrix2Panel.removeAll();
+				    matrix3Panel.removeAll();
 				    view.revalidate();
 				    view.repaint();
 				    
@@ -131,9 +136,12 @@ public class CreatorState {
 								newMatrixData[i][j] = 0; }
 							matrix1Panel.add(matrixNum);}}
 				    
+				    System.out.println(question.matrix1.sizeX);
 				    question.matrix1.matrixData = newMatrixData;
 				    question.matrix1.sizeX = newMatrixData.length - 1;
 				    question.matrix1.sizeY = newMatrixData[0].length - 1;
+				    question.matrix1.matrix = MatrixUtils.createRealMatrix(newMatrixData);
+				    System.out.println(question.matrix1.sizeX);
 				    
 				    newMatrixData = new double[curSettings.m2d1 + 1][curSettings.m2d2 + 1];
 				    for (int i = 0; i <= curSettings.m2d1; i++){
@@ -150,6 +158,23 @@ public class CreatorState {
 				    question.matrix2.matrixData = newMatrixData;
 				    question.matrix2.sizeX = newMatrixData.length - 1;
 				    question.matrix2.sizeY = newMatrixData[0].length - 1;
+				    question.matrix2.matrix = MatrixUtils.createRealMatrix(newMatrixData);
+				    
+				    //Recalculate answer matrix based on new matrices
+				    System.out.println(question.answerMatrix.sizeX);
+				    question.answerMatrix = question.compute();
+				    System.out.println(question.answerMatrix.sizeX);
+				    matrix3Panel.setLayout(new GridLayout(question.answerMatrix.sizeX, question.answerMatrix.sizeY));
+				    for (int i = 0; i < question.answerMatrix.sizeX; i++)
+					{
+						for (int j = 0; j < question.answerMatrix.sizeY; j++)
+						{
+							JTextField matrixNum = new JTextField(5);
+							matrixNum.setText(String.valueOf((question.answerMatrix.matrixData[i][j])));
+							matrix3Panel.add(matrixNum);
+						
+						}
+					}
 				    
 				    view.revalidate();
 				    view.repaint();
