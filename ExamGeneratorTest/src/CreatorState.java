@@ -9,20 +9,30 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -30,6 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JFileChooser;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -41,6 +52,7 @@ public class CreatorState {
 	JButton btnMatrix=new JButton("Add Matrix Question");
 	JButton btnExport=new JButton("Finish and Export Test");
 	JButton btnCommit=new JButton("Commit Changes");
+	JButton btnImage = new JButton ("Add Image");
 	
 	int numQuestions = 0; //total number of questions in test
 	int curQuestionNum = 0; //number of question in questionList being edited at the moment
@@ -91,6 +103,65 @@ public class CreatorState {
 			}
 	    }); 
 		
+		btnImage.addActionListener(new ActionListener()
+		{  
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				System.out.println("image uploaded opened");
+                JFileChooser fileChooser = new JFileChooser ();
+                fileChooser.showOpenDialog(null);
+                File f = fileChooser.getSelectedFile();
+                
+                Question question = questionsList.get(curQuestionNum);
+                question.imageFilename = f.getAbsolutePath();
+                
+                try {
+                	File imageFile = new File(question.imageFilename);
+                	BufferedImage imgBuf = ImageIO.read(imageFile);
+                	int imgHeight = imgBuf.getHeight();
+                	double dScaleWidth = getScaleFactor(imgBuf.getWidth(), relUnitX * 9);
+                	int scaleWidth = (int) Math.round(imgBuf.getWidth() * dScaleWidth);
+                	Image img = imgBuf.getScaledInstance(scaleWidth, imgHeight, imgBuf.SCALE_SMOOTH);
+                	question.format = new ImageIcon(img);
+                	
+
+					JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
+					JLabel curLabel = (JLabel) curPanel.getComponent(0);
+					curLabel.setIcon(question.format);
+					curPanel.setPreferredSize(new Dimension(relUnitX * 9, imgHeight + (relUnitY * 5) ));
+					curPanel.setMaximumSize(new Dimension(relUnitX * 9, imgHeight + (relUnitY * 5)));
+					view.revalidate();
+				    view.repaint();
+					System.out.println("Made it here");
+					
+					
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, e1);
+				}
+			}
+			
+			public double getScaleFactor(int iMasterSize, int iTargetSize) {
+
+			    double dScale = 1;
+			    if (iMasterSize > iTargetSize) {
+
+			        dScale = (double) iTargetSize / (double) iMasterSize;
+
+			    } else {
+
+			        dScale = (double) iTargetSize / (double) iMasterSize;
+
+			    }
+
+			    return dScale;
+
+			}
+	    }); 
+		
+		
 		//Button that applies any changes made to the setting panel
 		btnCommit.addActionListener(new ActionListener()
 		{  
@@ -102,6 +173,8 @@ public class CreatorState {
 				{
 					MatrixSettings curSettings = (MatrixSettings) settingsPanelManager.settingsList.get(curQuestionNum);
 					JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
+					curPanel = (JPanel) curPanel.getComponent(1);
+					//System.out.println(view.getComponents());
 					MatrixQuestion question = (MatrixQuestion) questionsList.get(curQuestionNum);
 
 					//matrix1Panel and matrix2Panel are the two JPanels in the TestPanel that hold the matrices to be multiplied
@@ -229,6 +302,7 @@ public class CreatorState {
 		scrollableTestPane.validate();
 		settingsPanel.removeAll();
 		settingsPanel.add(settingsPanelManager.addSettings(question.questionType, question, true));
+		settingsPanel.add(btnImage);
 		settingsPanel.add(btnCommit);
 		settingsPanel.add(Box.createRigidArea(new Dimension(relUnitX, 15 * relUnitY)));
 		mainPanel.validate();
@@ -241,6 +315,7 @@ public class CreatorState {
 		curQuestionNum = questionNum;
 		Question question = questionsList.get(questionNum);
 		settingsPanel.add(settingsPanelManager.addSettings("Matrix", question, true));
+		settingsPanel.add(btnImage);
 		settingsPanel.add(btnCommit);
 		settingsPanel.add(Box.createRigidArea(new Dimension(relUnitX, 15 * relUnitY)));
 		mainPanel.validate();
@@ -286,6 +361,7 @@ public class CreatorState {
 		view.setLayout(new BoxLayout(view, 1));
 		view.setBackground(Color.white);
 		scrollableTestPane = new JScrollPane(view);
+		//scrollableTestPane.setPreferredSize(new Dimension(relUnitX * 10, dimY));
 		scrollableTestPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
 		//testPanel.add(Box.createRigidArea(new Dimension(relUnitX * 10, 1)));
 		testPanel.setPreferredSize(new Dimension(relUnitX * 10, dimY));

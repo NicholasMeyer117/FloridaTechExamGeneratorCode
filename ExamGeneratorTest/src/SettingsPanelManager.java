@@ -27,6 +27,7 @@ public class SettingsPanelManager {
 		relUnitY = this.relUnitY;
 	}
 	
+	
 	public JPanel addSettings(String type, Question question, boolean newQuestion)
 	{
 		JPanel newPanel = new JPanel();
@@ -75,9 +76,10 @@ public class SettingsPanelManager {
 			
 		}
 		
-		
 		newPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		return newPanel;
 		
 	}
+	
+	
 }
