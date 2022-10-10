@@ -1,3 +1,4 @@
+import javax.swing.JPanel;
 
 class MatrixSettings extends Settings
 {
@@ -9,9 +10,17 @@ class MatrixSettings extends Settings
 	public MatrixSettings(String type, Question question) {
 		super(type, question);
 
+	}	
+	
+	public JPanel commitSettings(JPanel curPanel) {
+		JPanel matrix1Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(1);
+	    JPanel matrix2Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(3);
+	    JPanel matrix3Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(5);
+	    matrix1Panel.removeAll();
+	    matrix2Panel.removeAll();
+	    matrix3Panel.removeAll();
+		return curPanel;
 	}
-	
-	
 	
 }
 

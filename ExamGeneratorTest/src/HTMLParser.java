@@ -8,7 +8,7 @@ public class HTMLParser {
 		for (int i = 0; i < questionsList.size(); i++)
 		{
 			//Question curQ;
-			if (questionsList.get(i).questionType.equals("Matrix"));
+			if (questionsList.get(i).questionType.equals("Matrix"))
 			{
 				MatrixQuestion curQ = (MatrixQuestion) questionsList.get(i);
 				parsedInput += parseMatrix(i + 1, curQ.questionText, 10, curQ.matrix1.matrixData, curQ.matrix2.matrixData, curQ.answerMatrix.matrixData);

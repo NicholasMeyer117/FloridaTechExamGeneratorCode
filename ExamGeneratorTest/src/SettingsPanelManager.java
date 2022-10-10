@@ -72,7 +72,11 @@ public class SettingsPanelManager {
 			
 				settingsList.add(newSettings);
 			}
-			
+
+		}
+		
+		else if (type.equals("ShortAnswer"))
+		{
 			
 		}
 		

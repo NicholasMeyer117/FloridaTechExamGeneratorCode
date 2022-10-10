@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -105,27 +106,39 @@ public class TestPanelManager {
 			matrixPanel2.setBorder(matteBorderBlack);
 			newQuestionPanel.add(Box.createRigidArea(new Dimension(1, 1)));
 			newQuestionPanel.add(matrixPanel1);
-			//newQuestionPanel.add(Box.createRigidArea(new Dimension(1,1)));
 			newQuestionPanel.add(jComboBox);
 			newQuestionPanel.add(matrixPanel2);
-			//newQuestionPanel.add(Box.createRigidArea(new Dimension(1,1)));
 			newQuestionPanel.add(equals);
 			newQuestionPanel.add(matrixPanel3);
 			newQuestionPanel.add(Box.createRigidArea(new Dimension(1,1)));
 			newPanel.add(newQuestionPanel);
 			
-			newPanel.setBorder(matteBorderRed);
-			basicPanel.add(newPanel, cons);
-			/*newPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    System.out.println("mouseClicked");
-                }
-            });*/
-			
+			basicPanel.add(newPanel, cons);			
 			
 			
 		}
+		else if (updateCode.equals("ShortAnswer")) 
+		{
+			cons.gridx = 0;
+			cons.gridy = 1;
+			cons.weighty = 0.5;
+			cons.weightx = 0.5;
+			cons.fill = cons.BOTH;
+			JPanel newPanel = new JPanel();
+			newPanel.setLayout(new BoxLayout(newPanel, BoxLayout.Y_AXIS));
+			
+			newPanel.setBorder(new EmptyBorder(10, 20, 20, 20));
+			JLabel name = new JLabel("Question " + numQuestions + ": Short Answer Text");
+			newPanel.add(name, BorderLayout.CENTER);
+			
+			JTextArea answerBox = new JTextArea(50, 5);
+			newPanel.add(answerBox);
+			
+			basicPanel.add(newPanel, cons);		
+			
+		}
 		
+		basicPanel.setBorder(matteBorderRed);
 		return basicPanel;
 	}
 	
