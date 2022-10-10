@@ -27,6 +27,7 @@ public class SettingsPanelManager {
 		relUnitY = this.relUnitY;
 	}
 	
+	
 	public JPanel addSettings(String type, Question question, boolean newQuestion)
 	{
 		JPanel newPanel = new JPanel();
@@ -71,13 +72,18 @@ public class SettingsPanelManager {
 			
 				settingsList.add(newSettings);
 			}
-			
-			
+
 		}
 		
+		else if (type.equals("ShortAnswer"))
+		{
+			
+		}
 		
 		newPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 		return newPanel;
 		
 	}
+	
+	
 }
