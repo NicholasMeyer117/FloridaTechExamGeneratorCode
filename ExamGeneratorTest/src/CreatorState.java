@@ -33,12 +33,14 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.analysis.polynomials.*;
 
 public class CreatorState {
 	
 	//global variables
 	int exitCode; //run method returns exit code when returning to application loop to determine what state to enter next
 	JButton btnMatrix=new JButton("Add Matrix Question");
+	JButton btnPoly=new JButton("Add Polynomial Question");
 	JButton btnExport=new JButton("Finish and Export Test");
 	JButton btnCommit=new JButton("Commit Changes");
 	
@@ -86,6 +88,18 @@ public class CreatorState {
 			public void actionPerformed(ActionEvent e) 
 			{
 				Question question = new MatrixQuestion("Solve for the unknown matrix", numQuestions, "Matrix");
+				addQuestion(question);
+
+			}
+	    }); 
+		
+		//Btn that creates a new Polynomial Question and adds it to the test
+		btnPoly.addActionListener(new ActionListener()
+		{  
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				Question question = new PolyQuestion("Solve for the polnomials", numQuestions, "Polynomial");
 				addQuestion(question);
 
 			}
@@ -180,6 +194,45 @@ public class CreatorState {
 				    view.repaint();
 				    
 				}
+				else if(questionsList.get(curQuestionNum).questionType.equals("Polynomial")) {
+					PolySettings curSettings = (PolySettings) settingsPanelManager.settingsList.get(curQuestionNum);
+					JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
+					PolyQuestion question = (PolyQuestion) questionsList.get(curQuestionNum);
+					
+					
+					JPanel poly1Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(1);
+				    JPanel poly2Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(3);
+				    JPanel poly3Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(5);
+				    poly1Panel.removeAll();
+				    poly2Panel.removeAll();
+				    poly3Panel.removeAll();
+				    view.revalidate();
+				    view.repaint();
+				    
+				    Component[] curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(1)).getComponents();
+					curSettings.poly1Degree = Integer.valueOf(((JTextField) curSettingsComponents[1]).getText()) - 1;
+					curSettings.poly2Degree = Integer.valueOf(((JTextField) curSettingsComponents[3]).getText()) - 1; 
+					curSettingsComponents = ((Container) ((Container) ((Container) mainPanel.getComponent(0)).getComponent(0)).getComponent(2)).getComponents();
+					curSettings.poly1Coeff = String.valueOf(((JTextField) curSettingsComponents[1]).getText());
+					curSettings.poly2Coeff = String.valueOf(((JTextField) curSettingsComponents[3]).getText());
+					poly1Panel.setLayout(new GridLayout(2,2));
+					poly2Panel.setLayout(new GridLayout(2,2));
+					
+					String poly1Test = question.polynomial_1.polynomial.toString();
+					JTextField poly1Text = new JTextField(poly1Test);
+					poly1Panel.add(poly1Text);
+					
+					String poly2Test = question.polynomial_2.polynomial.toString();
+					JLabel poly2Label = new JLabel(poly2Test);
+					poly2Panel.add(poly2Label);
+					
+					String poly3Test = question.polynomial_ans.polynomial.toString();
+					JLabel poly3Label = new JLabel(poly3Test);
+					poly3Panel.add(poly3Label);
+					
+					view.revalidate();
+				    view.repaint();
+				}
 				
 				
 			}
@@ -241,6 +294,7 @@ public class CreatorState {
 		curQuestionNum = questionNum;
 		Question question = questionsList.get(questionNum);
 		settingsPanel.add(settingsPanelManager.addSettings("Matrix", question, true));
+		settingsPanel.add(settingsPanelManager.addSettings("Polynomial", question, true));
 		settingsPanel.add(btnCommit);
 		settingsPanel.add(Box.createRigidArea(new Dimension(relUnitX, 15 * relUnitY)));
 		mainPanel.validate();
@@ -315,6 +369,7 @@ public class CreatorState {
 		questionPanel.add(Box.createRigidArea(new Dimension(1, relUnitY)));
 		questionPanel.add(Box.createVerticalStrut(relUnitY));
 		questionPanel.add(btnMatrix);
+		questionPanel.add(btnPoly);
 		questionPanel.add(Box.createRigidArea(new Dimension(1, dimY)));
 		mainPanel.add(questionPanel, cons);
 		

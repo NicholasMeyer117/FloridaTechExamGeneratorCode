@@ -74,6 +74,30 @@ public class SettingsPanelManager {
 			
 			
 		}
+		else if(type.equals("Polynomial")) {
+			PolySettings newSettings = new PolySettings(type, question);
+			PolyQuestion curQ =(PolyQuestion) question;
+			JPanel poly1Panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			poly1Panel.add(new JLabel("Polynomial 1: "));
+			
+			JTextField poly1 = new JTextField(5);
+			poly1.setText(String.valueOf(curQ.polynomial_1.polynomial.toString()));
+			poly1Panel.add(poly1);
+			poly1Panel.add(new JLabel("+"));
+			
+			JTextField poly2 = new JTextField(5);
+			poly2.setText(String.valueOf(curQ.polynomial_2.polynomial.toString()));
+			poly1Panel.add(poly2);
+			
+			newPanel.add(poly1Panel);
+			
+			if(newQuestion) {
+				newSettings.poly1Coeff = String.valueOf(poly1.getText());
+				newSettings.poly2Coeff = String.valueOf(poly2.getText());
+				
+				settingsList.add(newSettings);
+			}
+		}
 		
 		
 		newPanel.setAlignmentY(Component.TOP_ALIGNMENT);

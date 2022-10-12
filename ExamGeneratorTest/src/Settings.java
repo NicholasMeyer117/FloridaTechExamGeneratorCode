@@ -15,6 +15,18 @@ class MatrixSettings extends Settings
 	
 }
 
+class PolySettings extends Settings {
+	int poly1Degree;
+	int poly2Degree;
+	String poly1Coeff;
+	String poly2Coeff;
+	
+	public PolySettings(String type, Question question) {
+		super(type, question);
+	}
+	
+}
+
 public class Settings {
 
 	String type;
