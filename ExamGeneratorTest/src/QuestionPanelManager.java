@@ -21,16 +21,18 @@ public class QuestionPanelManager {
 	int type = 0; //General = 0, Math = 1, Physics = 2, Chemistry = 3
 	JButton btnShortAnswer;
 	JButton btnMultipleChoice;
+	JButton btnPoly;
 	
 	JButton btnMatrix;
 	
-	public QuestionPanelManager(int relX, int relY, JButton bShortAnswer, JButton bMultipleChoice, JButton bMatrix)
+	public QuestionPanelManager(int relX, int relY, JButton bShortAnswer, JButton bMultipleChoice, JButton bMatrix, JButton bPoly)
 	{
 		relUnitX = relX;
 		relUnitY = relY;
 		btnMultipleChoice = bMultipleChoice;
 		btnShortAnswer = bShortAnswer;
 		btnMatrix = bMatrix;
+		btnPoly = bPoly;
 	}
 	
 	public JPanel addQuestionTypes(JButton bGen, JButton bMath, JButton bPhysics, JButton bChem)
@@ -87,6 +89,13 @@ public class QuestionPanelManager {
 			btnMatrix.setAlignmentX(Component.CENTER_ALIGNMENT);
 			btnMatrix.setVisible(true);
 			questionsPanel.add(btnMatrix); 	
+			
+            questionsPanel.add(Box.createVerticalStrut(relUnitY));
+			
+			btnPoly.setFont(font1);
+			btnPoly.setAlignmentX(Component.CENTER_ALIGNMENT);
+			btnPoly.setVisible(true);
+			questionsPanel.add(btnPoly);
 		}
 		
 		

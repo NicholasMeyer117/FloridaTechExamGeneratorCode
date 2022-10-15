@@ -13,9 +13,9 @@ public class CommitHandler {
 	{
 		//matrix1Panel and matrix2Panel are the two JPanels in the TestPanel that hold the matrices to be multiplied
 		//matrix 3 is the answer matrix JPanel
-	    JPanel matrix1Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(1);
-	    JPanel matrix2Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(3);
-	    JPanel matrix3Panel = (JPanel) ((JPanel) curPanel.getComponent(1)).getComponent(5);
+	    JPanel matrix1Panel = (JPanel) ((JPanel) curPanel.getComponent(0)).getComponent(1);
+	    JPanel matrix2Panel = (JPanel) ((JPanel) curPanel.getComponent(0)).getComponent(3);
+	    JPanel matrix3Panel = (JPanel) ((JPanel) curPanel.getComponent(0)).getComponent(5);
 	    matrix1Panel.removeAll();
 	    matrix2Panel.removeAll();
 	    matrix3Panel.removeAll();
@@ -87,5 +87,12 @@ public class CommitHandler {
 	    view.repaint();
 	    
 	    return question;
+	}
+	
+    public PolyQuestion commitPolyChanges(JPanel view, JPanel mainPanel, PolySettings curSettings, JPanel curPanel, PolyQuestion question)
+	{
+		return question;
+    	
+    	
 	}
 }

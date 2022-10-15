@@ -1,3 +1,4 @@
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -10,9 +11,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,12 +44,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JFileChooser;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.analysis.polynomials.*;
 
 public class CreatorState {
 	
@@ -52,7 +60,8 @@ public class CreatorState {
 	JButton btnMatrix=new JButton("Add Matrix Question");
 	JButton btnShortAnswer = new JButton("Add Short Answer Question");
 	JButton btnMultipleChoice = new JButton("Add Multiple Choice Question");
-	
+	JButton btnPoly = new JButton("Add Polynomial Question");
+
 	JButton btnGen = new JButton ("General");
 	JButton btnMath = new JButton ("Math");
 	JButton btnPhysics = new JButton ("Physics");
@@ -86,6 +95,9 @@ public class CreatorState {
 	QuestionPanelManager questionPanelManager;// = new QuestionPanelManager(relUnitX, relUnitY);
 	List<Question> questionsList = new ArrayList<Question>();
 	
+	static Toolkit tk = Toolkit.getDefaultToolkit();
+    static long eventMask =AWTEvent.MOUSE_EVENT_MASK + AWTEvent.KEY_EVENT_MASK;
+	
 	//main code block for the creator state
 	public int run(Frame frame)
 	{ 
@@ -99,6 +111,39 @@ public class CreatorState {
 		
 		HTMLParser parser = new HTMLParser();
 		
+		//global key listener
+		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+	    manager.addKeyEventDispatcher(new KeyEventDispatcher() 
+	    {
+	    	 public boolean dispatchKeyEvent(KeyEvent e)
+	    	 {
+	    		if (e.getKeyCode() ==  KeyEvent.VK_ENTER && numQuestions > 0)
+	            {
+	            	    commitChanges();
+	            	    return true;
+	            }
+	            return false;
+	         }
+	    });
+	    
+		//Global Mouse Listener
+	    tk.addAWTEventListener(new AWTEventListener() 
+	    {
+	        @Override
+	        public void eventDispatched(AWTEvent e) {
+	            if ( e.getID () == MouseEvent.MOUSE_CLICKED )
+	            {
+					if (numQuestions > 0)
+					{
+						Question curQuestion = questionsList.get(curQuestionNum);
+						settingsPanelManager.refreshSettings(curQuestion.questionType, curQuestionNum, settingsPanel);
+	                    mainPanel.validate();
+					}
+	            }
+	            	
+	        }
+	    }, eventMask);
+
 		//Btn that creates new Matrix Question and adds it to the test
 		btnMatrix.addActionListener(new ActionListener()
 		{  
@@ -131,6 +176,18 @@ public class CreatorState {
 				addQuestion(question);
 			}
 	    });
+		
+		//Btn that creates a new Polynomial Question and adds it to the test
+		btnPoly.addActionListener(new ActionListener()
+		{  
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				Question question = new PolyQuestion("Solve for the polynomials", numQuestions, "Polynomial");
+				addQuestion(question);
+
+			}
+	    }); 
 		
 		
 		btnGen.addActionListener(new ActionListener()
@@ -215,28 +272,6 @@ public class CreatorState {
 	    }); 
 		
 		
-		//Button that applies any changes made to the setting panel
-		btnCommit.addActionListener(new ActionListener()
-		{  
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				CommitHandler commitHandler = new CommitHandler();
-				//if the current question being worked on is a Matrix question, run this code
-				if (questionsList.get(curQuestionNum).questionType.equals("Matrix"))
-				{
-					MatrixSettings curSettings = (MatrixSettings) settingsPanelManager.settingsList.get(curQuestionNum);
-					JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
-					curPanel = (JPanel) curPanel.getComponent(1);
-					MatrixQuestion question = (MatrixQuestion) questionsList.get(curQuestionNum);
-					
-					question = commitHandler.commitMatrixChanges(view, mainPanel, curSettings, curPanel, question);
-				}
-				
-				
-			}
-	    }); 
-		
 		//Takes the current list of questions and passes to the parser to convert to HTML
 		btnExport.addActionListener(new ActionListener()
 		{  
@@ -256,6 +291,51 @@ public class CreatorState {
 		
 		
 	}
+	
+	//Button that applies any changes made to the setting panel
+	/*btnCommit.addActionListener(new ActionListener()
+	{  
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{*/
+	public void commitChanges()
+	{
+			CommitHandler commitHandler = new CommitHandler();
+			//if the current question being worked on is a Matrix question, run this code
+			if (questionsList.get(curQuestionNum).questionType.equals("Matrix"))
+			{
+				MatrixSettings curSettings = (MatrixSettings) settingsPanelManager.settingsList.get(curQuestionNum);
+				Component[] components = view.getComponents();  
+				String componentName;
+				for (Component compo : components) {
+		            componentName = compo.getClass().getName();
+		            System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
+		        }
+				System.out.println("=======================");
+				JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
+				components = curPanel.getComponents();  
+				for (Component compo : components) {
+		            componentName = compo.getClass().getName();
+		            System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
+		        }
+				curPanel = (JPanel) curPanel.getComponent(2);
+				MatrixQuestion question = (MatrixQuestion) questionsList.get(curQuestionNum);
+				
+				question = commitHandler.commitMatrixChanges(view, mainPanel, curSettings, curPanel, question);
+			}
+			else if (questionsList.get(curQuestionNum).questionType.equals("Polynomial"))
+			{
+				PolySettings curSettings = (PolySettings) settingsPanelManager.settingsList.get(curQuestionNum);
+				JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
+				curPanel = (JPanel) curPanel.getComponent(2);
+				PolyQuestion question = (PolyQuestion) questionsList.get(curQuestionNum);
+				
+				question = commitHandler.commitPolyChanges(view, mainPanel, curSettings, curPanel, question);
+			}
+			
+			
+    }
+    // }); 
 	
 	public void refreshQuestionPanel()
 	{
@@ -307,7 +387,7 @@ public class CreatorState {
 		settingsPanel.removeAll();
 		curQuestionNum = questionNum;
 		Question question = questionsList.get(questionNum);
-		settingsPanel.add(settingsPanelManager.addSettings(question.questionType, question, true));
+		settingsPanel.add(settingsPanelManager.addSettings(question.questionType, question, false));
 		settingsPanel.add(btnImage);
 		settingsPanel.add(btnCommit);
 		settingsPanel.add(Box.createRigidArea(new Dimension(relUnitX, 15 * relUnitY)));
@@ -325,7 +405,7 @@ public class CreatorState {
 	    relUnitX = dimX/20; //relative X unit
 	    relUnitY = dimY/20; //Relative Y unit
 	    
-	    questionPanelManager = new QuestionPanelManager(relUnitX, relUnitY, btnShortAnswer, btnMultipleChoice, btnMatrix);
+	    questionPanelManager = new QuestionPanelManager(relUnitX, relUnitY, btnShortAnswer, btnMultipleChoice, btnMatrix, btnPoly);
 	    
 		mainPanel = new JPanel(new GridBagLayout());
 		mainPanel.setBackground(new Color(255,215,0));
@@ -389,5 +469,6 @@ public class CreatorState {
 		
 		return mainPanel;
 	}
+	
 
 }
