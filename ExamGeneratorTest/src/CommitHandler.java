@@ -16,6 +16,32 @@ public class CommitHandler {
 	    JPanel matrix1Panel = (JPanel) ((JPanel) curPanel.getComponent(0)).getComponent(1);
 	    JPanel matrix2Panel = (JPanel) ((JPanel) curPanel.getComponent(0)).getComponent(3);
 	    JPanel matrix3Panel = (JPanel) ((JPanel) curPanel.getComponent(0)).getComponent(5);
+	    
+	    Matrix matrix1 = question.getMatrix(1);
+		Matrix matrix2 = question.getMatrix(2);
+		Matrix ansMatrix = question.getMatrix(3);
+
+		for (int i = 0; i <= matrix1.sizeX; i++)
+		{
+			for (int j = 0; j <= matrix1.sizeY; j++)
+			{
+				double value = Double.valueOf(((JTextField) matrix1Panel.getComponent(((matrix1.sizeX + 1) * i) + j)).getText());
+				System.out.println("Value: " + value);
+				matrix1.matrixData[i][j] = value;
+			}
+		}
+		
+		for (int i = 0; i <= matrix2.sizeX; i++)
+		{
+			for (int j = 0; j <= matrix2.sizeY; j++)
+			{
+				double value = Double.valueOf(((JTextField) matrix2Panel.getComponent(((matrix2.sizeX + 1) * i) + j)).getText());
+				System.out.println("Value: " + value);
+				matrix2.matrixData[i][j] = value;
+			}
+		}
+	    
+	    
 	    matrix1Panel.removeAll();
 	    matrix2Panel.removeAll();
 	    matrix3Panel.removeAll();
@@ -32,8 +58,10 @@ public class CommitHandler {
 	    matrix2Panel.setLayout(new GridLayout(curSettings.m2d1 + 1, curSettings.m2d2 + 1));
 	    
 	    double [][] newMatrixData = new double[curSettings.m1d1 + 1][curSettings.m1d2 + 1];			    
-	    for (int i = 0; i <= curSettings.m1d1; i++){
-	    	for (int j = 0; j <= curSettings.m1d2; j++){
+	    for (int i = 0; i <= curSettings.m1d1; i++)
+	    {
+	    	for (int j = 0; j <= curSettings.m1d2; j++)
+	    	{
 	    		JTextField matrixNum = new JTextField(5);
 				if (i <= question.matrix1.sizeX && j <= question.matrix1.sizeY){
 					matrixNum.setText(String.valueOf(question.matrix1.matrixData[i][j]));
@@ -41,7 +69,9 @@ public class CommitHandler {
 				else{
 					matrixNum.setText("0");
 					newMatrixData[i][j] = 0; }
-				matrix1Panel.add(matrixNum);}}
+				matrix1Panel.add(matrixNum);
+			}
+	    }
 	    
 	    System.out.println(question.matrix1.sizeX);
 	    question.matrix1.matrixData = newMatrixData;
@@ -91,8 +121,7 @@ public class CommitHandler {
 	
     public PolyQuestion commitPolyChanges(JPanel view, JPanel mainPanel, PolySettings curSettings, JPanel curPanel, PolyQuestion question)
 	{
+    	
 		return question;
-    	
-    	
 	}
 }
