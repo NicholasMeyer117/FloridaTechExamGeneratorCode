@@ -121,7 +121,30 @@ public class CommitHandler {
 	
     public PolyQuestion commitPolyChanges(JPanel view, JPanel mainPanel, PolySettings curSettings, JPanel curPanel, PolyQuestion question)
 	{
-    	
+    	Component[] components = view.getComponents();  
+		String componentName;
+    	System.out.println("=======================");
+		components = curPanel.getComponents();  
+		for (Component compo : components) {
+            componentName = compo.getClass().getName();
+            System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
+        }
+		
+		JPanel polyPanel = (JPanel) curPanel.getComponent(0);
+		components = polyPanel.getComponents();  
+		for (Component compo : components) {
+            componentName = compo.getClass().getName();
+            System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
+        }
+		
+		for (int i = 1; i <=  question.polyList.size(); i++){
+			//Poly poly = question.polyList.get(i);
+			//curSettings.m1d1 = Integer.valueOf(((JTextField) curSettingsComponents[1]).getText()) - 1;
+			//Poly newPoly = new Poly();
+			//question.polyList.set(i, poly)
+		}
+		
+		
 		return question;
 	}
 }
