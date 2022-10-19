@@ -130,6 +130,7 @@ public class CommitHandler {
             System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
         }
 		
+		System.out.println("=======================");
 		JPanel polyPanel = (JPanel) curPanel.getComponent(0);
 		components = polyPanel.getComponents();  
 		for (Component compo : components) {
@@ -137,13 +138,21 @@ public class CommitHandler {
             System.out.println(compo.getClass().getName().substring(componentName.indexOf("swing.") + "swing.".length(), componentName.length()));
         }
 		
-		for (int i = 1; i <=  question.polyList.size(); i++){
-			//Poly poly = question.polyList.get(i);
+		for (int i = 1; i <  question.polyList.size(); i++)
+		{
+			Poly poly = question.polyList.get(i);
 			//curSettings.m1d1 = Integer.valueOf(((JTextField) curSettingsComponents[1]).getText()) - 1;
 			//Poly newPoly = new Poly();
 			//question.polyList.set(i, poly)
+			String polyStr = ((JTextField) components[0]).getText();
+			System.out.println(polyStr);
+			double[] coeff = question.stringToPoly(polyStr);
+			for (double element: coeff)
+			{
+				System.out.println(String.valueOf(element));
+			}
+			
 		}
-		
 		
 		return question;
 	}

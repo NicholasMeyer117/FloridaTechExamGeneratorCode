@@ -102,6 +102,41 @@ public class PolyQuestion extends Question {
 		return coefficents;
 	}
 	
+	public double[] stringToPoly(String polyStr)
+	{
+		int lengthArr = 0;
+		
+		char[] polyArr = polyStr.toCharArray();
+		
+		//Need to remove any exponents
+		//I do this in this instance by changing the value there into a non int
+		
+		for(int i = 0; i < polyStr.length(); i++)
+		{
+			if (polyArr[i] == '^')
+			{
+				polyArr[i+1] = 'a';
+			}
+			else if (Character.isDigit(polyStr.charAt(i)))
+			{
+				lengthArr++;
+			}
+		}
+		
+		double[] coeffArr =  new double[lengthArr];
+		String numStr = String.valueOf(polyArr);
+		
+		//Use Guava CharMather in actually program this is just a test to see if it works
+		String numsOfPoly = numStr.replaceAll("[^0-9]", "");
+		System.out.println(numsOfPoly);
+		
+		for(int i = 0; i < numsOfPoly.length(); i++) {
+			coeffArr[i] = (double) (numsOfPoly.charAt(i) - '0');
+		}
+		
+		return coeffArr;
+	}
+	
 	public Poly getPoly(int num)
 	{
 		return polyList.get(num);
