@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -27,6 +28,15 @@ public class SettingsPanelManager {
 		relUnitY = this.relUnitY;
 	}
 	
+	public void refreshSettings(String type, int questionNum, JPanel settingsPanel)
+	{
+		if (type.equals("Polynomial"))
+		{
+			JLabel numPolyLabel = (JLabel) ((JPanel) ((JPanel) settingsPanel.getComponent(0)).getComponent(1)).getComponent(0);
+			PolySettings curSettings = (PolySettings) settingsList.get(questionNum);
+			numPolyLabel.setText("Polynomials: " + curSettings.numOfPolynomials);
+		}
+	}
 	
 	public JPanel addSettings(String type, Question question, boolean newQuestion)
 	{
@@ -80,7 +90,59 @@ public class SettingsPanelManager {
 			
 		}
 		
+		else if (type.equals("Polynomial"))
+		{
+			PolySettings newSettings;
+			PolyQuestion curQ =(PolyQuestion) question;
+			if (newQuestion == true)
+				newSettings = new PolySettings(type, question);
+			else 
+				newSettings = (PolySettings) settingsList.get(curQ.questionNum);
+
+			JLabel numPolyLabel = new JLabel();
+			numPolyLabel.setText("Polynomials: " + newSettings.numOfPolynomials);
+			
+			JButton btnAddPoly = new JButton ("+");
+			JButton btnRemovePoly = new JButton ("-");
+			
+			btnAddPoly.addActionListener(new ActionListener()
+			{  
+				@Override
+				public void actionPerformed(ActionEvent e) 
+				{
+                    newSettings.numOfPolynomials++;
+                    System.out.println(newSettings.numOfPolynomials);
+                    Poly newPoly = new Poly();
+                    curQ.polyList.add(newPoly); 
+                    
+				}
+		    });
+			
+			btnRemovePoly.addActionListener(new ActionListener()
+			{  
+				@Override
+				public void actionPerformed(ActionEvent e) 
+				{
+					newSettings.numOfPolynomials--;
+				}
+		    });
+
+			JPanel newPolyPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			newPolyPanel.add(numPolyLabel);
+			newPolyPanel.add(btnAddPoly);
+			newPolyPanel.add(btnRemovePoly);
+			newPanel.add(newPolyPanel);
+			
+			if(newQuestion) {
+				newSettings.numOfPolynomials = curQ.polyList.size() - 1;
+
+				settingsList.add(newSettings);
+			}
+		}
+		
 		newPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+		newPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		newPanel.add(Box.createHorizontalGlue());
 		return newPanel;
 		
 	}

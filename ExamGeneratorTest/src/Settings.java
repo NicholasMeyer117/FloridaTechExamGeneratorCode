@@ -24,6 +24,15 @@ class MatrixSettings extends Settings
 	
 }
 
+class PolySettings extends Settings {
+	int numOfPolynomials = 2;
+
+	public PolySettings(String type, Question question) {
+		super(type, question);
+	}
+
+}
+
 public class Settings {
 
 	String type;
