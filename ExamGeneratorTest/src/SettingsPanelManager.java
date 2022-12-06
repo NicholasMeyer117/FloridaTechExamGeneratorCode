@@ -33,7 +33,6 @@ public class SettingsPanelManager {
 		if (type.equals("Polynomial"))
 		{
 			JLabel numPolyLabel = (JLabel) ((JPanel) ((JPanel) settingsPanel.getComponent(0)).getComponent(1)).getComponent(0);
-			//JPanel matrix1Panel = (JPanel) ((JPanel) curPanel.getComponent(0)).getComponent(1);
 			PolySettings curSettings = (PolySettings) settingsList.get(questionNum);
 			numPolyLabel.setText("Polynomials: " + curSettings.numOfPolynomials);
 		}

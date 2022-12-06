@@ -7,10 +7,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
@@ -71,6 +74,14 @@ public class CreatorState {
 	JButton btnCommit=new JButton("Commit Changes");
 	JButton btnImage = new JButton ("Add Image");
 	
+	JButton btnAddTextBox = new JButton ("Add Textbox");
+	List<JButton> dragableButtonsList = new ArrayList<JButton>();
+	int btnInList = 0;
+
+	static boolean click = false;
+	//static Toolkit tk = Toolkit.getDefaultToolkit();
+	//static long eventMask =AWTEvent.MOUSE_MOTION_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK;
+	
 	int numQuestions = 0; //total number of questions in test
 	int curQuestionNum = 0; //number of question in questionList being edited at the moment
 	
@@ -96,7 +107,8 @@ public class CreatorState {
 	List<Question> questionsList = new ArrayList<Question>();
 	
 	static Toolkit tk = Toolkit.getDefaultToolkit();
-    static long eventMask =AWTEvent.MOUSE_EVENT_MASK + AWTEvent.KEY_EVENT_MASK;
+    static long eventMask =AWTEvent.MOUSE_EVENT_MASK + AWTEvent.KEY_EVENT_MASK; //eventmask to use enter to confirm
+    static long eventMaskTextbox =AWTEvent.MOUSE_MOTION_EVENT_MASK + AWTEvent.MOUSE_EVENT_MASK; //eventmask to add textbox to images
 	
 	//main code block for the creator state
 	public int run(Frame frame)
@@ -143,6 +155,65 @@ public class CreatorState {
 	            	
 	        }
 	    }, eventMask);
+	    
+		//Global Mouse Listener
+	    tk.addAWTEventListener(new AWTEventListener() 
+	    {
+	        @Override
+	        public void eventDispatched(AWTEvent e) {
+	            if ( e.getID () == MouseEvent.MOUSE_MOVED )
+	            {
+	                if (click)
+	                {
+		             int pointX = MouseInfo.getPointerInfo().getLocation().x - testPanel.getLocationOnScreen().x;
+		             int pointY = MouseInfo.getPointerInfo().getLocation().y - testPanel.getLocationOnScreen().y;
+	               	 dragableButtonsList.get(btnInList).setLocation(pointX - 50, pointY - 30);
+	               	 view.revalidate();
+				     view.repaint();
+	                }
+	            }
+	            else if ( e.getID () == MouseEvent.MOUSE_PRESSED)
+	            {
+	            	if (click)
+	            		click = !click;
+	            }
+
+	        }
+	    }, eventMaskTextbox);
+	    
+	    //Adds a dragable textbox to the image panel
+  		btnAddTextBox.addActionListener(new ActionListener()
+  		{  
+  			@Override
+  			public void actionPerformed(ActionEvent e) 
+  			{
+  				JButton btnNewBtn = new JButton ("Button");
+  				JTextField textfield = new JTextField();
+  				btnNewBtn.add(textfield);
+  				btnNewBtn.setSize(100, 60);
+  				int btnTag = dragableButtonsList.size();
+  				dragableButtonsList.add(btnNewBtn);
+
+  				btnNewBtn.addActionListener(new ActionListener()
+  				{  
+  					@Override
+  					public void actionPerformed(ActionEvent e) 
+  					{
+  			            click = !click;
+  			            btnInList = btnTag; 
+
+  					}
+  			    });
+
+  				JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
+  				JLabel curLabel = (JLabel) curPanel.getComponent(0);
+  				curLabel.setLayout(null);
+  				curLabel.add(dragableButtonsList.get(dragableButtonsList.size() - 1));
+  				view.revalidate();
+  			    view.repaint();
+
+  			}
+  	    });
 
 		//Btn that creates new Matrix Question and adds it to the test
 		btnMatrix.addActionListener(new ActionListener()
@@ -377,6 +448,7 @@ public class CreatorState {
 		settingsPanel.add(settingsPanelManager.addSettings(question.questionType, question, true));
 		settingsPanel.add(btnImage);
 		settingsPanel.add(btnCommit);
+		settingsPanel.add(btnAddTextBox);
 		settingsPanel.add(Box.createRigidArea(new Dimension(relUnitX, 15 * relUnitY)));
 		mainPanel.validate();
 	}
@@ -390,6 +462,7 @@ public class CreatorState {
 		settingsPanel.add(settingsPanelManager.addSettings(question.questionType, question, false));
 		settingsPanel.add(btnImage);
 		settingsPanel.add(btnCommit);
+		settingsPanel.add(btnAddTextBox);
 		settingsPanel.add(Box.createRigidArea(new Dimension(relUnitX, 15 * relUnitY)));
 		mainPanel.validate();
 	}
