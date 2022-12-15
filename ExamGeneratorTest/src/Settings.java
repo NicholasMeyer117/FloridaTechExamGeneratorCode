@@ -33,6 +33,13 @@ class PolySettings extends Settings {
 
 }
 
+class ShortAnswerSettings extends Settings {
+
+	public ShortAnswerSettings(String type, Question question) {
+		super(type, question);
+	}
+}
+
 public class Settings {
 
 	String type;

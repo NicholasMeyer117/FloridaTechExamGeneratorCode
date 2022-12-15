@@ -403,8 +403,7 @@ public class CreatorState {
 				
 				question = commitHandler.commitPolyChanges(view, mainPanel, curSettings, curPanel, question);
 			}
-			
-			
+				
     }
     // }); 
 	

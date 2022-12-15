@@ -87,7 +87,11 @@ public class SettingsPanelManager {
 		
 		else if (type.equals("ShortAnswer"))
 		{
-			
+			ShortAnswerSettings newSettings = new ShortAnswerSettings(type, question);
+			if (newQuestion)
+			{
+				settingsList.add(newSettings);
+			}
 		}
 		
 		else if (type.equals("Polynomial"))

@@ -34,7 +34,7 @@ public class application {
 				state = MenuState.run(frame);
 			else if (state == 1)
 			{
-				System.out.println("Run Creator State");
+				//Run creator state
 				state = creatorState.run(frame);
 			}
 		}

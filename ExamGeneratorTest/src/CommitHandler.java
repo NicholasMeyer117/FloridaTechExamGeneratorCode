@@ -21,22 +21,23 @@ public class CommitHandler {
 		Matrix matrix2 = question.getMatrix(2);
 		Matrix ansMatrix = question.getMatrix(3);
 
+		//System.out.println("Matrix 1");
 		for (int i = 0; i <= matrix1.sizeX; i++)
 		{
 			for (int j = 0; j <= matrix1.sizeY; j++)
 			{
 				double value = Double.valueOf(((JTextField) matrix1Panel.getComponent(((matrix1.sizeX + 1) * i) + j)).getText());
-				System.out.println("Value: " + value);
+				//System.out.println(i + "," + j + "Value: " + value);
 				matrix1.matrixData[i][j] = value;
 			}
 		}
-		
+		//System.out.println("Matrix 2");
 		for (int i = 0; i <= matrix2.sizeX; i++)
 		{
 			for (int j = 0; j <= matrix2.sizeY; j++)
 			{
 				double value = Double.valueOf(((JTextField) matrix2Panel.getComponent(((matrix2.sizeX + 1) * i) + j)).getText());
-				System.out.println("Value: " + value);
+				//System.out.println(i + "," + j + "Value: " + value);
 				matrix2.matrixData[i][j] = value;
 			}
 		}
