@@ -171,6 +171,8 @@ public class CreatorState {
 	               	 questionsList.get(curQuestionNum).dragableButtonsList.get(btnInList).setLocation(pointX - 50, pointY - 30);
 	               	 questionsList.get(curQuestionNum).xCoords.set(btnInList, questionsList.get(curQuestionNum).dragableButtonsList.get(btnInList).getX());
 	               	 questionsList.get(curQuestionNum).yCoords.set(btnInList, questionsList.get(curQuestionNum).dragableButtonsList.get(btnInList).getY());
+	               	 double widthScaleFactor = questionsList.get(curQuestionNum).imageWidthScaleFactor;
+	               	 questionsList.get(curQuestionNum).xCoords.set(btnInList, (int) (questionsList.get(curQuestionNum).xCoords.get(btnInList) / widthScaleFactor));
 	               	 view.revalidate();
 				     view.repaint();
 	                }
@@ -214,6 +216,8 @@ public class CreatorState {
   				curLabel.add(questionsList.get(curQuestionNum).dragableButtonsList.get(questionsList.get(curQuestionNum).dragableButtonsList.size() - 1));
   				
   				questionsList.get(curQuestionNum).xCoords.add(btnNewBtn.getX());
+  				double widthScaleFactor = questionsList.get(curQuestionNum).imageWidthScaleFactor;
+              	questionsList.get(curQuestionNum).xCoords.set(btnInList, (int) (questionsList.get(curQuestionNum).xCoords.get(btnInList) / widthScaleFactor));
   				questionsList.get(curQuestionNum).yCoords.add(btnNewBtn.getY());
   				questionsList.get(curQuestionNum).ddAnswers.add("");
   				
@@ -312,6 +316,7 @@ public class CreatorState {
                 	double dScaleWidth = getScaleFactor(imgBuf.getWidth(), relUnitX * 9);
                 	int scaleWidth = (int) Math.round(imgBuf.getWidth() * dScaleWidth);
                 	Image img = imgBuf.getScaledInstance(scaleWidth, imgHeight, imgBuf.SCALE_SMOOTH);
+                	question.imageWidthScaleFactor = dScaleWidth;
                 	question.format = new ImageIcon(img);
                 	
 

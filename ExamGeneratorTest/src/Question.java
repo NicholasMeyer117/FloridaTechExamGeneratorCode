@@ -14,6 +14,7 @@ public class Question {
 	
 	String imageFilename = null;
 	byte[] photo = null;
+	double imageWidthScaleFactor = 0;
 	
 	//To store drag and drop locations and values
 	List<JButton> dragableButtonsList = new ArrayList<JButton>();
