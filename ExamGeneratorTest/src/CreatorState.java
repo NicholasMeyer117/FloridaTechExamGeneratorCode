@@ -75,7 +75,7 @@ public class CreatorState {
 	JButton btnImage = new JButton ("Add Image");
 	
 	JButton btnAddTextBox = new JButton ("Add Textbox");
-	List<JButton> dragableButtonsList = new ArrayList<JButton>();
+	//List<JButton> dragableButtonsList = new ArrayList<JButton>();
 	int btnInList = 0;
 
 	static boolean click = false;
@@ -165,9 +165,12 @@ public class CreatorState {
 	            {
 	                if (click)
 	                {
-		             int pointX = MouseInfo.getPointerInfo().getLocation().x - testPanel.getLocationOnScreen().x;
-		             int pointY = MouseInfo.getPointerInfo().getLocation().y - testPanel.getLocationOnScreen().y;
-	               	 dragableButtonsList.get(btnInList).setLocation(pointX - 50, pointY - 30);
+	                 JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
+		             int pointX = MouseInfo.getPointerInfo().getLocation().x - curPanel.getLocationOnScreen().x;
+		             int pointY = MouseInfo.getPointerInfo().getLocation().y - curPanel.getLocationOnScreen().y;
+	               	 questionsList.get(curQuestionNum).dragableButtonsList.get(btnInList).setLocation(pointX - 50, pointY - 30);
+	               	 questionsList.get(curQuestionNum).xCoords.set(btnInList, questionsList.get(curQuestionNum).dragableButtonsList.get(btnInList).getX());
+	               	 questionsList.get(curQuestionNum).yCoords.set(btnInList, questionsList.get(curQuestionNum).dragableButtonsList.get(btnInList).getY());
 	               	 view.revalidate();
 				     view.repaint();
 	                }
@@ -191,8 +194,8 @@ public class CreatorState {
   				JTextField textfield = new JTextField();
   				btnNewBtn.add(textfield);
   				btnNewBtn.setSize(100, 60);
-  				int btnTag = dragableButtonsList.size();
-  				dragableButtonsList.add(btnNewBtn);
+  				int btnTag = questionsList.get(curQuestionNum).dragableButtonsList.size();
+  				questionsList.get(curQuestionNum).dragableButtonsList.add(btnNewBtn);
 
   				btnNewBtn.addActionListener(new ActionListener()
   				{  
@@ -208,7 +211,12 @@ public class CreatorState {
   				JPanel curPanel = (JPanel) view.getComponent(curQuestionNum * 2);
   				JLabel curLabel = (JLabel) curPanel.getComponent(0);
   				curLabel.setLayout(null);
-  				curLabel.add(dragableButtonsList.get(dragableButtonsList.size() - 1));
+  				curLabel.add(questionsList.get(curQuestionNum).dragableButtonsList.get(questionsList.get(curQuestionNum).dragableButtonsList.size() - 1));
+  				
+  				questionsList.get(curQuestionNum).xCoords.add(btnNewBtn.getX());
+  				questionsList.get(curQuestionNum).yCoords.add(btnNewBtn.getY());
+  				questionsList.get(curQuestionNum).ddAnswers.add("");
+  				
   				view.revalidate();
   			    view.repaint();
 

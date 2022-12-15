@@ -76,7 +76,7 @@ public class HTMLParser {
 		    }
 	    }
 	    
-	    for (int i = 0; i < questionsList.size(); i++)
+	    /*for (int i = 0; i < questionsList.size(); i++)
 		{
 	    	if (questionsList.get(i).imageFilename != null)
 	    	{
@@ -107,7 +107,7 @@ public class HTMLParser {
 					e.printStackTrace();
 				}
 	    	}
-		}
+		}*/
 		
 		
 	}

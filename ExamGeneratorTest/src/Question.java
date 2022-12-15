@@ -1,7 +1,9 @@
+import java.awt.Button;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 public class Question {
 	String questionText;
@@ -14,9 +16,10 @@ public class Question {
 	byte[] photo = null;
 	
 	//To store drag and drop locations and values
-	List<Integer> xCoords = new ArrayList();; 
-	List<Integer> yCoords = new ArrayList();; 
-	List<String> ddAnswers = new ArrayList();;
+	List<JButton> dragableButtonsList = new ArrayList<JButton>();
+	List<Integer> xCoords = new ArrayList<Integer>();
+	List<Integer> yCoords = new ArrayList<Integer>();
+	List<String> ddAnswers = new ArrayList<String>();
 	
 	public Question(String text, int num, String type)
 	{
