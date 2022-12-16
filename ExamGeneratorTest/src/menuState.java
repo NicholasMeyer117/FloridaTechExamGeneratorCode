@@ -85,7 +85,12 @@ public class menuState {
 		
 		while (true)
 		{
-			System.out.println("If i remove this print statement, the code breaks");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			if (exitCode != 0)
 				return exitCode;
 		}
